@@ -1,8 +1,10 @@
-import tensorflow as tf
-import tensorflow.layers as layers
-import Encoder
-import Decoder
+import numpy as np
+import tensorflow.keras.layers as layers
 from tqdm import tqdm
+
+from Decoder import Decoder
+from Encoder import Encoder
+from tokenize import *
 
 
 class NMT(tf.keras.Model):
@@ -38,13 +40,14 @@ class NMT(tf.keras.Model):
         embed_src = self.e_embedding(context)
         embed_trg = self.d_embedding(target)
 
-        encoder_outputs, state_h, state_c = self.encoder(src=embed_src,
-                                                         mask=e_mask,
-                                                         training=True)
-        decoder_outputs, state_h, state_c = self.decoder(trg=embed_trg,
-                                                         previous_state=[state_h, state_c],
-                                                         mask=d_mask,
-                                                         training=True)
+        encoder_outputs, state_h, state_c = self.encoder.call(src=embed_src,
+                                                              mask=e_mask,
+                                                              training=True)
+
+        decoder_outputs, state_h, state_c = self.decoder.call(trg=embed_trg,
+                                                              previous_state=[state_h, state_c],
+                                                              mask=d_mask,
+                                                              training=True)
         prediction = self.dense(decoder_outputs)
 
         return prediction, state_h, state_c
@@ -58,7 +61,6 @@ class NMT(tf.keras.Model):
         """
             Train the model.
 
-        :param model: generator model
         :param dataset: training dataset
         :param loss_fn: loss function
         :param optimizer: optimizer
@@ -77,14 +79,14 @@ class NMT(tf.keras.Model):
                 tokenized_target = tf.map_fn(lambda x: x[:-1], tokenized_target)
 
                 with tf.GradientTape() as tape:
-                    prediction, _, _ = self(tokenized_context, tokenized_target)
+                    prediction, _, _ = self.call(tokenized_context, tokenized_target)
                     loss = loss_fn(TF_target, prediction)
                     loss_sum += loss
 
                 gradients = tape.gradient(loss, self.trainable_weights)
                 optimizer.apply_gradients(zip(gradients, self.trainable_weights))
 
-            val_loss_sum = 0;
+            val_loss_sum = 0
             if val_set is not None:
                 for step, (context, target) in enumerate(tqdm(val_set)):
                     tokenized_context = en_vec(context)
@@ -93,7 +95,7 @@ class NMT(tf.keras.Model):
                     TF_target = tf.map_fn(lambda x: x[1:], tokenized_target)
                     tokenized_target = tf.map_fn(lambda x: x[:-1], tokenized_target)
 
-                    prediction, _, _ = self(tokenized_context, tokenized_target)
+                    prediction, _, _ = self.call(tokenized_context, tokenized_target)
                     loss = loss_fn(TF_target, prediction)
                     val_loss_sum += loss
 
@@ -113,8 +115,8 @@ class NMT(tf.keras.Model):
         next_word = "<sos>"
         de_vocab = de_vec.get_vocabulary()
 
-        encoder_state, state_h, state_c = self.encoder(src=embed_input,
-                                                       training=False)
+        encoder_state, state_h, state_c = self.encoder.call(src=embed_input,
+                                                            training=False)
 
         for i in range(30):
             if next_word != "<eos>":
@@ -122,9 +124,9 @@ class NMT(tf.keras.Model):
                 embed_word = self.d_embedding(tokenized_word)
                 embed_word = tf.expand_dims(embed_word, axis=0)
 
-                decoder_outputs, state_h, state_c = self.decoder(trg=embed_word,
-                                                            previous_state=[state_h, state_c],
-                                                            training=False)
+                decoder_outputs, state_h, state_c = self.decoder.call(trg=embed_word,
+                                                                      previous_state=[state_h, state_c],
+                                                                      training=False)
 
                 prediction = self.dense(decoder_outputs)
 
