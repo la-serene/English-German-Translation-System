@@ -1,0 +1,5 @@
+keras==2.15.0
+numpy==1.26.3
+tensorflow==2.15.0
+tqdm==4.66.1
+tensorflow-text==2.15.0
