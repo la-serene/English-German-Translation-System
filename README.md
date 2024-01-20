@@ -49,11 +49,11 @@ project's notebook.
 
 Although the project has made it in implementing the seq2seq model proposed by Sutskever et al. (2014), model's
 translations can not be considered decent enough. This could be due to various factors, namely the lack of dataset
-diversity, model setting, etc. Generating a new translation could be considered as a user-friendly solution to find the
-best translation as well as test model translation's stability.
+diversity, model setting, etc. Repeatedly sampling a new translation could be considered as a user-friendly solution to find the
+best translation as well as test the model quality.
 
-Here are some translations of model. Note that the German version has been modified to follow German grammar.
-Translations should not be expected to fully convey the meaning of the original sentence.
+Here are some translated examples. Note that the German version has been modified to follow German grammar.
+As said, translations should not be expected to fully convey the meaning of the original sentence.
 
 | English                                | German (edited)                               |
 |----------------------------------------|-----------------------------------------------|
