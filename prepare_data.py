@@ -1,31 +1,10 @@
 import numpy as np
 import tensorflow as tf
 
-
-contraction_mapping = {
-    "Let's": "Let us",
-    "'d better": " had better",
-    "'s": " is",
-    "'re": " are",
-    "n't": " not",
-    "'m": " am",
-    "'ll": " will",
-    "'d": " would",
-    "'ve": " have",
-    "won't": "will not",
-    "cannot": "can not"
-}
+from tokenize import *
 
 BUFFER_SIZE = 1024
 BATCH_SIZE = 64
-
-
-def expand_contraction(text, mapping=None):
-    if mapping is None:
-        mapping = contraction_mapping
-    for contraction, expanded in mapping.items():
-        text = text.replace(contraction, expanded)
-    return text
 
 
 def prepare_dataset(path_to_dataset):
@@ -49,11 +28,42 @@ def prepare_dataset(path_to_dataset):
     return english, german
 
 
-def convert_to_tf_dataset(context, target):
-    return (
+def convert_to_tf_dataset(english, german):
+    train_ratio = 0.8
+    val_ratio = 0.1
+    test_ratio = 0.1
+
+    train_mask = np.random.uniform(size=(len(english),)) < train_ratio
+    val_mask = np.logical_and(~train_mask, np.random.uniform(size=(len(english),)) < val_ratio)
+    test_mask = ~(train_mask | val_mask)
+
+    train_raw = (
         tf.data.Dataset
-        .from_tensor_slices((context, target))
+        .from_tensor_slices((english[train_mask], german[train_mask]))
         .shuffle(BUFFER_SIZE)
         .batch(BATCH_SIZE)
-        .prefetch(tf.data.experimental.AUTOTUNE)
-    )
+        .prefetch(tf.data.experimental.AUTOTUNE))
+
+    val_raw = (
+        tf.data.Dataset
+        .from_tensor_slices((english[val_mask], german[val_mask]))
+        .shuffle(BUFFER_SIZE)
+        .batch(BATCH_SIZE)
+        .prefetch(tf.data.experimental.AUTOTUNE))
+
+    test_raw = (
+        tf.data.Dataset
+        .from_tensor_slices((english[test_mask], german[test_mask]))
+        .shuffle(BUFFER_SIZE)
+        .batch(BATCH_SIZE)
+        .prefetch(tf.data.experimental.AUTOTUNE))
+
+    return train_raw, val_raw, test_raw
+
+
+def process_text(context, target):
+    context = en_vec(context)
+    target = ger_vec(target)
+    targ_in = target[:, :-1]
+    targ_out = target[:, 1:]
+    return (context, targ_in), targ_out
