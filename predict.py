@@ -1,7 +1,5 @@
-import sys
-
-from prepare_data import *
 from model import NMT
+from prepare_data import *
 from tokenize import *
 
 # Constant
@@ -19,20 +17,27 @@ output_vocab_size = len(ger_vec.get_vocabulary())
 
 
 def main():
-    source_sentence = sys.argv[-1]
-
     nmt = NMT(en_vec,
               ger_vec,
               embedding_size,
               hidden_units)
 
+    print("Loading the weight...")
+
     # Init model params
     nmt.predict("lorem ispum")
     nmt.load_weights("weights/model_v4.weights.h5")
-    translation = nmt.predict(source_sentence)
-    print(translation)
 
-    return translation
+    while 1:
+        sentence = input("Input the English sentence:")
+
+        if sentence == "" or "\n":
+            break
+
+        translation = nmt.predict(sentence)
+        print(translation)
+
+    return 0
 
 
 if __name__ == "__main__":
