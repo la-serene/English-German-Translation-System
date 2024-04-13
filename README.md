@@ -1,6 +1,6 @@
 # Introduction
 
-An English - German Neural Machine Translator informed by the seq2seq paper by Sutskever et al. (2014).
+An English - German Neural Machine Translator informed by Bahdanau Attention paper by Bahdanau et al. (2014).
 
 Note: Since this project is carried out for educational purpose, the overall performance may not be satisfying.
 Besides, there is no evaluation step despite the test set.
@@ -23,7 +23,7 @@ pip install requirements.txt
 
 # Usage
 
-After replacing the `____` with the source English sentence and running the command, the translation will be printed
+After replacing the `____` with the source English sentence and running the command, the translation should be printed
 in console.
 
 ```
@@ -42,28 +42,32 @@ contain 25,000 samples. Due to some reasons, test set is not used in any operati
 
 # Training
 
-This project is not developed for training on a custom dataset. However, all training detail can be found in the
+This project is not designed for training on a custom dataset. However, all training detail can be found in the
 project's notebook.
 
 # Results
 
-Although the project has made it in implementing the seq2seq model proposed by Sutskever et al. (2014), model's
-translations can not be considered decent enough. This could be due to various factors, namely the lack of dataset
-diversity, model setting, etc. Repeatedly sampling a new translation could be considered as a user-friendly solution to find the
-best translation as well as test the model quality.
+Since the last version of this model, the apply of Bahdanau Attention on seq2seq has yielded significant improvement in
+the overall performance. Translations have become more satisfying on long sentences. Repeatedly sampling a new translation
+could be considered as a user-friendly solution to find the best translation as well as test the model quality.
 
 Here are some translated examples. Note that the German version has been modified to follow German grammar.
 As said, translations should not be expected to fully convey the meaning of the original sentence.
 
-| English                                | German (edited)                               |
-|----------------------------------------|-----------------------------------------------|
-| This is the first translation.         | Das ist der schnellste Kapitel.               |
-| I didn't go to his birthday yesterday. | Ich fuhr mit seinen Geburtstag nach drauen.   |
-| He tries to read a book every week.    | Er hat einen woche eine Reicht fur sie horen. |
+| English                                | German                                           |
+|----------------------------------------|--------------------------------------------------|
+| This is the first translation.         | Danke bitte wahrend das sonst fischen.           |
+| I didn't go to his birthday yesterday. | Er arzt gleich den originals uber in den weisen. |
+| He tries to read a book every week.    | Er schwierig eine, banane wir gestern zu einem.  |
 
 # References
 
-<a id="1" href="https://arxiv.org/abs/1409.3215">[1]</a>
+<a id="1" href="https://arxiv.org/abs/1409.0473">[2]</a>
+Dzmitry Bahdanau, Kyunghyun Cho, Yoshua Bengio.
+Neural Machine Translation by Jointly Learning to Align and Translate.
+ICLR 2015.
+
+<a id="2" href="https://arxiv.org/abs/1409.3215">[1]</a>
 Ilya Sutskever, Oriol Vinyals, Quoc V. Le (2014).
 Sequence to Sequence Learning with Neural Networks.
 NIPS 2014.
