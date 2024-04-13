@@ -15,6 +15,7 @@ contraction_mapping = {
     "won't": "will not",
     "cannot": "can not"
 }
+
 BUFFER_SIZE = 1024
 BATCH_SIZE = 64
 
@@ -27,23 +28,25 @@ def expand_contraction(text, mapping=None):
     return text
 
 
-def process_dataset(path_to_dataset):
-    en_set = []
-    de_set = []
+def prepare_dataset(path_to_dataset):
+    english = []
+    german = []
 
     with open(path_to_dataset) as f:
         for line in f:
-            en_de = line.split("CC-BY")
-            if len(en_de) > 0:
-                sample = en_de[0]
+            line = line.split("CC-BY")
+
+            if len(line) > 0:
+                sample = line[0]
                 sample = sample.strip().split('\t')
-                en_set.append(expand_contraction(sample[0], contraction_mapping))
-                de_set.append("<SOS> " + sample[1] + " <EOS>")
 
-    en_set = np.array(en_set)
-    de_set = np.array(de_set)
+                english.append(sample[0])
+                german.append(sample[1])
 
-    return en_set, de_set
+    english = np.array(english)
+    german = np.array(german)
+
+    return english, german
 
 
 def convert_to_tf_dataset(context, target):

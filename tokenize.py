@@ -20,7 +20,9 @@ contraction_map = {
 }
 
 
-def expand_contractions(text, mapping=contraction_map):
+def expand_contractions(text, mapping=None):
+    if mapping is None:
+        mapping = contraction_map
     for key, value in mapping.items():
         text = tf.strings.regex_replace(text, key, value)
     return text
@@ -62,7 +64,6 @@ def tf_split_punct(text):
     return text
 
 
-# Vectorizer initial
 en_vec = TextVectorization(max_tokens=max_vocab_size,
                            standardize=tf_lower_and_split_punct)
 ger_vec = TextVectorization(max_tokens=max_vocab_size,
