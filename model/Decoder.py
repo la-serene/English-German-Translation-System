@@ -1,6 +1,9 @@
 import tensorflow as tf
-from BahdanauAttention import BahdanauAttention
 from tensorflow.keras.layers import Layer, Embedding, LSTM, Dense
+
+from BahdanauAttention import BahdanauAttention
+
+DROPOUT = 0.2
 
 
 class Decoder(Layer):
@@ -21,7 +24,6 @@ class Decoder(Layer):
         :param embedding_size: dimensionality of the embedding layer
         :param hidden_units: dimensionality of the output
         """
-
         super(Decoder, self).__init__()
         self.hidden_units = hidden_units
         self.tokenizer = tokenizer
@@ -30,23 +32,28 @@ class Decoder(Layer):
         self.embedding = Embedding(input_dim=self.vocab_size,
                                    output_dim=embedding_size)
         self.rnn = LSTM(units=hidden_units,
-                        dropout=DROPOUT,
+                        dropout=dropout,
                         return_sequences=True,
                         return_state=True)
         self.attention = BahdanauAttention(hidden_units)
         self.dense = Dense(15000)
 
     def call(self,
-            context, x,
-            encoder_state,
-            training=True,
-            return_state=False):
+             context, x,
+             encoder_state,
+             training=True,
+             return_state=False):
         """
-        :param trg: [batch, timesteps]
-        :param previous_state: [batch, hidden_unit_dim]
+        :param context: all encoder states
+        :param x: all initial decoder states
+        :param encoder_state: last state from encoder
+        :param training:
+        :param return_state:
 
         :return:
-            prediction: [vocab_size, None]
+            logits:
+            state_h: hidden state
+            state_c: cell state
         """
         mask = tf.where(x != 0, True, False)
         x = self.embedding(x)
