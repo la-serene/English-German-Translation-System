@@ -2,7 +2,6 @@ import tensorflow as tf
 
 from Decoder import Decoder
 from Encoder import Encoder
-from tokenize import *
 
 
 class NMT(tf.keras.Model):
