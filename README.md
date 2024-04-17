@@ -62,12 +62,12 @@ As said, translations should not be expected to fully convey the meaning of the 
 
 # References
 
-<a id="1" href="https://arxiv.org/abs/1409.0473">[2]</a>
+<a id="1" href="https://arxiv.org/abs/1409.0473">[1]</a>
 Dzmitry Bahdanau, Kyunghyun Cho, Yoshua Bengio.
 Neural Machine Translation by Jointly Learning to Align and Translate.
 ICLR 2015.
 
-<a id="2" href="https://arxiv.org/abs/1409.3215">[1]</a>
+<a id="2" href="https://arxiv.org/abs/1409.3215">[2]</a>
 Ilya Sutskever, Oriol Vinyals, Quoc V. Le (2014).
 Sequence to Sequence Learning with Neural Networks.
 NIPS 2014.
