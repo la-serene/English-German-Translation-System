@@ -63,7 +63,7 @@ As said, translations should not be expected to fully convey the meaning of the 
 # References
 
 <a id="1" href="https://arxiv.org/abs/1409.0473">[1]</a>
-Dzmitry Bahdanau, Kyunghyun Cho, Yoshua Bengio.
+Dzmitry Bahdanau, Kyunghyun Cho, Yoshua Bengio (2014).
 Neural Machine Translation by Jointly Learning to Align and Translate.
 ICLR 2015.
 
