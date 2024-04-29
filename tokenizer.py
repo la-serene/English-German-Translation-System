@@ -1,12 +1,13 @@
 import tensorflow as tf
 import tensorflow_text as tf_text
+import re
 from tensorflow.keras.layers import TextVectorization
 
-max_vocab_size = 15000
+max_vocab_size = 20000
 
-contraction_map = {
+en_contraction_map = {
     # This should be wrapped as a JSON file.
-    "Let's": "Let us",
+    "let's": "let us",
     "'d better": " had better",
     "'s": " is",
     "'re": " are",
@@ -16,23 +17,45 @@ contraction_map = {
     "'ve": " have",
     "won't": "will not",
     "n't": " not",
-    "cannot": "can not"
+    "cannot": "can not",
+}
+
+ger_contraction_map = {
+    "'s": " ist",
+    "ä": "ae",
+    "ö": "oe",
+    "ü": "ue",
+    "ß": "ss",
+    "am ": "an dem ",
+    "ans ": "an das ",
+    "aufs ": "auf das ",
+    "durchs ": "durch das ",
+    "fuers ": "fuer das ",
+    "hinterm ": "hinter dem ",
+    "im ": "in dem ",
+    "uebers ": "ueber das ",
+    "ums ": "um das ",
+    "unters ": "unter das ",
+    "unterm ": "unter dem ",
+    "vors ": "vor das ",
+    "vorm ": "vor dem ",
+    "zum ": "zu dem ",
+    "ins ": "in das ",
+    "vom ": "von dem ",
+    "beim ": "bei dem ",
+    "zur  ": "zu der ",
 }
 
 
-def expand_contractions(text, mapping=None):
-    if mapping is None:
-        mapping = contraction_map
+def expand_contractions(text, mapping):
     for key, value in mapping.items():
-        text = tf.strings.regex_replace(text, key, value)
+        text = re.sub(key, value, text)
     return text
 
 
-def tf_lower_and_split_punct(text):
+def en_rule(text):
     # Split accented characters.
-    text = expand_contractions(text)
     text = tf_text.normalize_utf8(text, 'NFKD')
-    text = tf.strings.lower(text)
 
     # Keep space, a to z, and select punctuation.
     text = tf.strings.regex_replace(text, '[^ a-z.?!,¿]', '')
@@ -46,10 +69,9 @@ def tf_lower_and_split_punct(text):
     return text
 
 
-def tf_split_punct(text):
+def ger_rule(text):
     # Split accented characters.
     text = tf_text.normalize_utf8(text, 'NFKD')
-    text = tf.strings.lower(text)
 
     # Keep space, a to z, and select punctuation.
     text = tf.strings.regex_replace(text, '[^ a-z.?!,¿]', '')
@@ -65,6 +87,6 @@ def tf_split_punct(text):
 
 
 en_vec = TextVectorization(max_tokens=max_vocab_size,
-                           standardize=tf_lower_and_split_punct)
+                           standardize=en_rule)
 ger_vec = TextVectorization(max_tokens=max_vocab_size,
-                            standardize=tf_split_punct)
+                            standardize=ger_rule)
