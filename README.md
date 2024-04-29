@@ -3,7 +3,6 @@
 An English - German Neural Machine Translator informed by Bahdanau Attention paper by Bahdanau et al. (2014).
 
 Note: Since this project is carried out for educational purpose, the overall performance may not be satisfying.
-Besides, there is no evaluation step despite the test set.
 
 # Table of contents
 
@@ -30,20 +29,37 @@ in console.
 python predict.py ____
 ```
 
+Here is a description on the command-line arguments:
+```
+--embedding_size: Size of the embedding layer. Default: 128.
+--hidden_units: Number of hidden units in the model. Default: 128.
+--weight_path: Path to the weights file for the custom model. Default: "./weights/custom_model_v1.weights.h5".
+```
+
 Currently, there is no additional configurable command-line arguments. In the future, an optional argument
 for `temperature` might be available.
 
 # Data
 
 The dataset is taken from Kaggle
-Dataset [English To German](https://www.kaggle.com/datasets/kaushal2896/english-to-german), consisting of around 221,533
-English-German pair of sentences and randomly split into 3 sets: training, evaluation and testing in which the last 2
-contain 25,000 samples. Due to some reasons, test set is not used in any operation.
+Dataset [English To German](https://www.kaggle.com/datasets/kaushal2896/english-to-german), consisting of around 277,891
+English-German pair of sentences and randomly split into 3 sets: training, evaluation and testing with ratio 0.8, 0.1,
+0,1 respectively.
 
 # Training
 
-This project is not designed for training on a custom dataset. However, all training detail can be found in the
-project's notebook.
+This project is now available for training on any English-German dataset. It's also noteworthy that the custom dataset 
+should follow the same pattern as in dataset folder.
+
+Here is a description on the command-line arguments:
+```angular2html
+--data_path: Path to the dataset file. Default: "./dataset/en_de.txt".
+--embedding_size: Size of the embedding layer. Default: 128.
+--hidden_units: Number of hidden units in the model. Default: 128.
+--epochs: Number of epochs for training. Default: 5.
+--learning_rate: Learning rate for the optimizer. Default: 0.001.
+--save_path: Path to save the trained model weights. Default: "./weights/custom_model_v1.weights.h5".
+```
 
 # Results
 
