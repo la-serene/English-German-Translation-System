@@ -1,5 +1,5 @@
 import tensorflow as tf
-from tensorflow.keras.layers import Layer, Dense
+from tensorflow.keras.layers import Layer, Dense, Add, Activation, LayerNormalization
 
 
 class BahdanauAttention(Layer):
@@ -9,14 +9,15 @@ class BahdanauAttention(Layer):
         self.Va = Dense(1)
         self.Wa = Dense(hidden_units)
         self.Ua = Dense(hidden_units)
-
-    def build(self, input_shape):
-        super(BahdanauAttention, self).build(input_shape)
+        self.norm = LayerNormalization()
+        self.tanh = Activation(tf.keras.activations.tanh)
+        self.add = Add()
 
     def call(self,
              context, x):
         """
-            Calculate the context vector based on all encoder hidden states and previous decoder state.
+            Calculate the context vector based on all encoder hidden states and
+            previous decoder state.
 
         :param: context: tensor, all encoder hidden states
         :param: x: tensor, previous state from Decoder
@@ -28,13 +29,15 @@ class BahdanauAttention(Layer):
         context = tf.expand_dims(context, axis=1)
         x = tf.expand_dims(x, axis=2)
 
-        scores = self.Va(tf.math.tanh(self.Wa(context) + self.Ua(x)))
-        scores = tf.squeeze(scores)
+        scores = self.Va(self.tanh(self.add([self.Wa(context), self.Ua(x)])))
+        scores = tf.squeeze(scores, axis=-1)
         attn_weights = tf.nn.softmax(scores, axis=-1)
 
         # NOTE: context shape = [batch, 1, Tx, feature] so that expand
         # dim of attention weights
         context_vector = tf.expand_dims(attn_weights, axis=-1) * context
         context_vector = tf.reduce_sum(context_vector, axis=-2)
+        context_vector = self.norm(context_vector)
+        context_vector = self.add([context_vector, tf.squeeze(x, -2)])
 
         return context_vector
