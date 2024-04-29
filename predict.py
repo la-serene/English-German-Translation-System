@@ -1,12 +1,21 @@
+import argparse
+
 from model import NMT
 from prepare_data import prepare_dataset, convert_to_tf_dataset
 from tokenizer import en_vec, ger_vec
 
 
+def get_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--embedding_size', type=int, default=128)
+    parser.add_argument('--hidden_units', type=int, default=128)
+    parser.add_argument('--weight_path', type=str, default="./weights/custom_model_v1.weights.h5")
+
+    return parser.parse_args()
+
+
 def main():
-    # Constant
-    hidden_units = 64
-    embedding_size = 32
+    args = get_args()
 
     en_set, de_set = prepare_dataset("dataset/en_de.txt")
     train_raw, val_raw, test_raw = convert_to_tf_dataset(en_set, de_set)
@@ -22,14 +31,14 @@ def main():
 
     nmt = NMT(en_vec,
               ger_vec,
-              embedding_size,
-              hidden_units)
+              args.embedding_size,
+              args.hidden_units)
 
     print("Loading the weight...")
 
     # Init model params
     nmt.predict("lorem ispum", word_to_idx)
-    # nmt.load_weights("weights/model_v4.weights.h5")
+    nmt.load_weights(args.weight_path)
 
     while 1:
         sentence = input("Input the English sentence:")
@@ -39,7 +48,7 @@ def main():
 
         translation = nmt.predict(sentence, word_to_idx)
         translation = " ".join(translation)
-        print(translation)
+        print("{}\n".format(translation))
 
     return 0
 
