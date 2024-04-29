@@ -1,6 +1,8 @@
 import tensorflow as tf
 import numpy as np
 
+from tokenizer import expand_contractions, en_contraction_map
+
 from .Encoder import Encoder
 from .Decoder import Decoder
 
@@ -46,6 +48,7 @@ class NMT(tf.keras.Model):
             return idx
 
         translation = []
+        next_inputs = expand_contractions(next_inputs, en_contraction_map)
         next_idx = np.asarray(self.encoder.tokenizer(next_inputs))
 
         while next_idx.ndim != 2:
