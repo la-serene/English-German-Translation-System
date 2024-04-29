@@ -1,7 +1,7 @@
-import numpy as np
 import tensorflow as tf
+import numpy as np
 
-from tokenize import *
+from tokenizer import en_vec, ger_vec, expand_contractions, en_contraction_map, ger_contraction_map
 
 BUFFER_SIZE = 1024
 BATCH_SIZE = 64
@@ -13,29 +13,32 @@ def prepare_dataset(path_to_dataset):
 
     with open(path_to_dataset) as f:
         for line in f:
-            line = line.split("CC-BY")
-
             if len(line) > 0:
-                sample = line[0]
-                sample = sample.strip().split('\t')
+                line = line.split("    ")
+                english.append(expand_contractions(line[0], en_contraction_map).numpy())
+                german.append(expand_contractions(line[1], ger_contraction_map).numpy())
 
-                english.append(sample[0])
-                german.append(sample[1])
-
-    english = np.array(english)
-    german = np.array(german)
+    english = np.asarray(english)
+    german = np.asarray(german)
 
     return english, german
 
 
 def convert_to_tf_dataset(english, german):
-    train_ratio = 0.8
-    val_ratio = 0.1
-    test_ratio = 0.1
+    mask = np.full((len(english),), False)
+    train_mask = np.copy(mask)
+    train_mask[:int(len(english) * 0.8)] = True
+    np.random.shuffle(train_mask)
 
-    train_mask = np.random.uniform(size=(len(english),)) < train_ratio
-    val_mask = np.logical_and(~train_mask, np.random.uniform(size=(len(english),)) < val_ratio)
-    test_mask = ~(train_mask | val_mask)
+    false_indices = np.where(train_mask is False)[0]
+    np.random.shuffle(false_indices)
+    border_idx = int(len(false_indices) / 2)
+
+    val_mask = np.copy(mask)
+    val_mask[false_indices[:border_idx]] = True
+
+    test_mask = np.copy(mask)
+    test_mask[false_indices[border_idx:]] = True
 
     train_raw = (
         tf.data.Dataset
