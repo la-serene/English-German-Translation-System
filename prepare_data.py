@@ -15,8 +15,8 @@ def prepare_dataset(path_to_dataset):
         for line in f:
             if len(line) > 0:
                 line = line.split("    ")
-                english.append(expand_contractions(line[0], en_contraction_map).numpy())
-                german.append(expand_contractions(line[1], ger_contraction_map).numpy())
+                english.append(expand_contractions(line[0], en_contraction_map))
+                german.append(expand_contractions(line[1], ger_contraction_map))
 
     english = np.asarray(english)
     german = np.asarray(german)
