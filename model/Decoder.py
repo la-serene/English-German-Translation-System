@@ -1,17 +1,12 @@
 import tensorflow as tf
 from tensorflow.keras.layers import Layer, Embedding, LSTM, Dense
 
-from BahdanauAttention import BahdanauAttention
+from .BahdanauAttention import BahdanauAttention
 
 DROPOUT = 0.2
 
 
 class Decoder(Layer):
-    @classmethod
-    def add_method(cls, fun):
-        setattr(cls, fun.__name__, fun)
-        return fun
-
     def __init__(self,
                  tokenizer,
                  embedding_size,
@@ -23,6 +18,7 @@ class Decoder(Layer):
         :param tokenizer: tokenizer of the source language
         :param embedding_size: dimensionality of the embedding layer
         :param hidden_units: dimensionality of the output
+        :param dropout: dropout rate
         """
         super(Decoder, self).__init__()
         self.hidden_units = hidden_units
@@ -36,7 +32,7 @@ class Decoder(Layer):
                         return_sequences=True,
                         return_state=True)
         self.attention = BahdanauAttention(hidden_units)
-        self.dense = Dense(15000)
+        self.dense = Dense(self.vocab_size)
 
     def call(self,
              context, x,

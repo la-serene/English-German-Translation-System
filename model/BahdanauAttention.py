@@ -16,11 +16,10 @@ class BahdanauAttention(Layer):
     def call(self,
              context, x):
         """
-            Calculate the context vector based on all encoder hidden states and
-            previous decoder state.
+            Calculate the context vector based on all encoder hidden states and previous decoder state.
 
         :param: context: tensor, all encoder hidden states
-        :param: state: tensor, previous state from Decoder
+        :param: x: tensor, previous state from Decoder
         :return:
             context_vector: tensor, the calculated context vector based on the
             input parameters

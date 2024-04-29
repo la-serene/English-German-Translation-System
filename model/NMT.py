@@ -1,7 +1,8 @@
 import tensorflow as tf
+import numpy as np
 
-from Decoder import Decoder
-from Encoder import Encoder
+from .Encoder import Encoder
+from .Decoder import Decoder
 
 
 class NMT(tf.keras.Model):
@@ -32,3 +33,45 @@ class NMT(tf.keras.Model):
                               [state_h, state_c])
 
         return logits
+
+    def predict(self,
+                next_inputs,
+                word_to_idx,
+                maxlen=40):
+        def sampling(_logits):
+            probs = tf.nn.softmax(_logits)
+            dist = probs.numpy().squeeze()
+            idx = np.random.choice(range(self.decoder.vocab_size), p=dist)
+
+            return idx
+
+        translation = []
+        next_idx = np.asarray(self.encoder.tokenizer(next_inputs))
+
+        while next_idx.ndim != 2:
+            next_idx = tf.expand_dims(next_idx, axis=0)
+
+        encoder_outputs, state_h, state_c = self.encoder(next_idx, training=False)
+
+        next_inputs = "[START]"
+        next_idx = np.asarray(word_to_idx[next_inputs])
+
+        for i in range(maxlen):
+            while next_idx.ndim != 2:
+                next_idx = tf.expand_dims(next_idx, axis=0)
+
+            logits, state_h, state_c = self.decoder(encoder_outputs, next_idx,
+                                                    [state_h, state_c],
+                                                    training=False,
+                                                    return_state=True)
+            next_idx = sampling(logits)
+            next_inputs = self.decoder.vocab[next_idx]
+
+            if next_inputs == "[END]":
+                break
+            elif next_inputs == "[UNK]":
+                continue
+            else:
+                translation.append(next_inputs)
+
+        return translation
