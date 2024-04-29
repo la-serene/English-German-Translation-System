@@ -1,12 +1,12 @@
+import re
+
 import tensorflow as tf
 import tensorflow_text as tf_text
-import re
 from tensorflow.keras.layers import TextVectorization
 
 max_vocab_size = 20000
 
 en_contraction_map = {
-    # This should be wrapped as a JSON file.
     "let's": "let us",
     "'d better": " had better",
     "'s": " is",
@@ -15,6 +15,7 @@ en_contraction_map = {
     "'ll": " will",
     "'d": " would",
     "'ve": " have",
+    "'em": " them",
     "won't": "will not",
     "n't": " not",
     "cannot": "can not",
@@ -26,8 +27,9 @@ ger_contraction_map = {
     "ö": "oe",
     "ü": "ue",
     "ß": "ss",
+    "'ne ": "eine ",
+    "'n ": "ein ",
     "am ": "an dem ",
-    "ans ": "an das ",
     "aufs ": "auf das ",
     "durchs ": "durch das ",
     "fuers ": "fuer das ",
@@ -41,7 +43,8 @@ ger_contraction_map = {
     "vorm ": "vor dem ",
     "zum ": "zu dem ",
     "ins ": "in das ",
-    "vom ": "von dem ",
+    "ans ": "an das ",
+    "vom ": "von dem",
     "beim ": "bei dem ",
     "zur  ": "zu der ",
 }
@@ -53,9 +56,10 @@ def expand_contractions(text, mapping):
     return text
 
 
-def en_rule(text):
+def text_standardize(text):
     # Split accented characters.
     text = tf_text.normalize_utf8(text, 'NFKD')
+    text = tf.strings.lower(text)
 
     # Keep space, a to z, and select punctuation.
     text = tf.strings.regex_replace(text, '[^ a-z.?!,¿]', '')
@@ -65,28 +69,14 @@ def en_rule(text):
 
     # Strip whitespace.
     text = tf.strings.strip(text)
-
-    return text
-
-
-def ger_rule(text):
-    # Split accented characters.
-    text = tf_text.normalize_utf8(text, 'NFKD')
-
-    # Keep space, a to z, and select punctuation.
-    text = tf.strings.regex_replace(text, '[^ a-z.?!,¿]', '')
-
-    # Add spaces around punctuation.
-    text = tf.strings.regex_replace(text, '[.?!,¿]', r' \0 ')
-
-    # Strip whitespace and add special tokens
-    text = tf.strings.strip(text)
     text = tf.strings.join(['[START]', text, '[END]'], separator=' ')
 
     return text
 
 
 en_vec = TextVectorization(max_tokens=max_vocab_size,
-                           standardize=en_rule)
+                           standardize=text_standardize,
+                           ragged=True)
 ger_vec = TextVectorization(max_tokens=max_vocab_size,
-                            standardize=ger_rule)
+                            standardize=text_standardize,
+                            ragged=True)
