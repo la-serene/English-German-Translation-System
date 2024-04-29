@@ -1,24 +1,32 @@
-import tensorflow as tf
 import numpy as np
+import tensorflow as tf
+from tensorflow.keras.models import Model
 
 from tokenizer import expand_contractions, en_contraction_map
-
-from .Encoder import Encoder
 from .Decoder import Decoder
+from .Encoder import Encoder
 
 
-class NMT(tf.keras.Model):
+class NMT(Model):
+    @classmethod
+    def add_method(cls, fun):
+        setattr(cls, fun.__name__, fun)
+        return fun
+
     def __init__(self,
                  input_tokenizer,
                  output_tokenizer,
                  embedding_size,
                  hidden_units):
         """
+            Initialize an instance for Neural Machine Translation Task
+
         :param input_tokenizer: tokenizer of the input language
         :param output_tokenizer: tokenizer of the output language
         :param embedding_size: dimensionality of embedding layer
         :param hidden_units: dimensionality of the output
         """
+
         super(NMT, self).__init__()
         self.encoder = Encoder(input_tokenizer,
                                embedding_size,
