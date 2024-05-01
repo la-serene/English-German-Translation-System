@@ -5,7 +5,7 @@ from tensorflow.keras.layers import Layer, Dense, Add, Activation, LayerNormaliz
 class BahdanauAttention(Layer):
     def __init__(self,
                  hidden_units):
-        super(BahdanauAttention, self).__init__()
+        super().__init__()
         self.Va = Dense(1)
         self.Wa = Dense(hidden_units)
         self.Ua = Dense(hidden_units)
