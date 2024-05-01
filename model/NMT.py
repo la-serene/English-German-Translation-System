@@ -113,4 +113,3 @@ class NMT(Model):
         hidden_units = config["hidden_units"]
 
         return cls(input_tokenizer, output_tokenizer, embedding_size, hidden_units)
-
