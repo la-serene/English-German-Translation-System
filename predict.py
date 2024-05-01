@@ -9,7 +9,7 @@ def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--embedding_size', type=int, default=128)
     parser.add_argument('--hidden_units', type=int, default=128)
-    parser.add_argument('--weight_path', type=str, default="./weights/custom_model_v1.weights.h5")
+    parser.add_argument('--weight_path', type=str, default="./weights/model_v6.weights.h5")
 
     return parser.parse_args()
 
