@@ -56,6 +56,7 @@ def expand_contractions(text, mapping):
     return text
 
 
+@tf.keras.utils.register_keras_serializable()
 def text_standardize(text):
     # Split accented characters.
     text = tf_text.normalize_utf8(text, 'NFKD')

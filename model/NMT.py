@@ -7,6 +7,7 @@ from .Decoder import Decoder
 from .Encoder import Encoder
 
 
+@tf.keras.utils.register_keras_serializable()
 class NMT(Model):
     @classmethod
     def add_method(cls, fun):
@@ -27,7 +28,11 @@ class NMT(Model):
         :param hidden_units: dimensionality of the output
         """
 
-        super(NMT, self).__init__()
+        super().__init__()
+        self.input_tokenizer = input_tokenizer
+        self.output_tokenizer = output_tokenizer
+        self.embedding_size = embedding_size
+        self.hidden_units = hidden_units
         self.encoder = Encoder(input_tokenizer,
                                embedding_size,
                                hidden_units)
@@ -44,19 +49,19 @@ class NMT(Model):
 
         return logits
 
-    def predict(self,
-                next_inputs,
+    def predict(self, next_inputs,
                 word_to_idx,
                 maxlen=40):
-        def sampling(_logits):
-            probs = tf.nn.softmax(_logits)
+
+        def sampling(logits):
+            probs = tf.nn.softmax(logits)
             dist = probs.numpy().squeeze()
             idx = np.random.choice(range(self.decoder.vocab_size), p=dist)
 
             return idx
 
         translation = []
-        next_inputs = expand_contractions(next_inputs, en_contraction_map)
+        next_inputs = expand_contractions(next_inputs.lower(), en_contraction_map)
         next_idx = np.asarray(self.encoder.tokenizer(next_inputs))
 
         while next_idx.ndim != 2:
@@ -85,4 +90,27 @@ class NMT(Model):
             else:
                 translation.append(next_inputs)
 
-        return translation
+        return " ".join(translation)
+
+    def get_config(self):
+        config = super().get_config()
+        config.update({
+            "input_tokenizer": tf.keras.utils.serialize_keras_object(self.input_tokenizer),
+            "output_tokenizer": tf.keras.utils.serialize_keras_object(self.output_tokenizer),
+            "embedding_size": self.embedding_size,
+            "hidden_units": self.hidden_units
+        })
+
+        return {**config}
+
+    @classmethod
+    def from_config(cls, config):
+        input_tokenizer_cfg = config["input_tokenizer"]
+        output_tokenizer_cfg = config["output_tokenizer"]
+        input_tokenizer = tf.keras.utils.deserialize_keras_object(input_tokenizer_cfg)
+        output_tokenizer = tf.keras.utils.deserialize_keras_object(output_tokenizer_cfg)
+        embedding_size = config["embedding_size"]
+        hidden_units = config["hidden_units"]
+
+        return cls(input_tokenizer, output_tokenizer, embedding_size, hidden_units)
+
