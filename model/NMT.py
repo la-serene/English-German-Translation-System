@@ -1,19 +1,13 @@
 import numpy as np
 import tensorflow as tf
-from tensorflow.keras.models import Model
+from tensorflow.keras import Model
 
-from tokenizer import expand_contractions, en_contraction_map
+from clean_data import expand_contractions
 from .Decoder import Decoder
 from .Encoder import Encoder
 
 
-@tf.keras.utils.register_keras_serializable()
 class NMT(Model):
-    @classmethod
-    def add_method(cls, fun):
-        setattr(cls, fun.__name__, fun)
-        return fun
-
     def __init__(self,
                  input_tokenizer,
                  output_tokenizer,
@@ -61,7 +55,7 @@ class NMT(Model):
             return idx
 
         translation = []
-        next_inputs = expand_contractions(next_inputs.lower(), en_contraction_map)
+        next_inputs = expand_contractions(next_inputs.lower(), lang="en")
         next_idx = np.asarray(self.encoder.tokenizer(next_inputs))
 
         while next_idx.ndim != 2:
