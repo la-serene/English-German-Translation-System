@@ -53,8 +53,8 @@ class NMT(Model):
                 word_to_idx,
                 maxlen=40):
 
-        def sampling(logits):
-            probs = tf.nn.softmax(logits)
+        def sampling(_logits):
+            probs = tf.nn.softmax(_logits)
             dist = probs.numpy().squeeze()
             idx = np.random.choice(range(self.decoder.vocab_size), p=dist)
 
@@ -91,25 +91,3 @@ class NMT(Model):
                 translation.append(next_inputs)
 
         return " ".join(translation)
-
-    def get_config(self):
-        config = super().get_config()
-        config.update({
-            "input_tokenizer": tf.keras.utils.serialize_keras_object(self.input_tokenizer),
-            "output_tokenizer": tf.keras.utils.serialize_keras_object(self.output_tokenizer),
-            "embedding_size": self.embedding_size,
-            "hidden_units": self.hidden_units
-        })
-
-        return {**config}
-
-    @classmethod
-    def from_config(cls, config):
-        input_tokenizer_cfg = config["input_tokenizer"]
-        output_tokenizer_cfg = config["output_tokenizer"]
-        input_tokenizer = tf.keras.utils.deserialize_keras_object(input_tokenizer_cfg)
-        output_tokenizer = tf.keras.utils.deserialize_keras_object(output_tokenizer_cfg)
-        embedding_size = config["embedding_size"]
-        hidden_units = config["hidden_units"]
-
-        return cls(input_tokenizer, output_tokenizer, embedding_size, hidden_units)

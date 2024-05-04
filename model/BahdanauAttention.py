@@ -22,8 +22,7 @@ class BahdanauAttention(Layer):
         :param: context: tensor, all encoder hidden states
         :param: x: tensor, previous state from Decoder
         :return:
-            context_vector: tensor, the calculated context vector based on the
-            input parameters
+            context_vector: tensor, the calculated context vector based on the input parameters
         """
         # Expand dims to ensure scores shape = [batch, Ty, Tx]
         context = tf.expand_dims(context, axis=1)

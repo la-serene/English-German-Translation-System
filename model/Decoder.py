@@ -10,13 +10,15 @@ class Decoder(Layer):
     def __init__(self,
                  tokenizer,
                  embedding_size,
-                 hidden_units):
+                 hidden_units,
+                 dropout=DROPOUT):
         """
             Decoder Block in seq2seq
 
         :param tokenizer: tokenizer of the source language
         :param embedding_size: dimensionality of the embedding layer
         :param hidden_units: dimensionality of the output
+        :param dropout: dropout rate
         """
 
         super().__init__()
@@ -28,17 +30,17 @@ class Decoder(Layer):
         self.embedding = Embedding(input_dim=self.vocab_size,
                                    output_dim=embedding_size)
         self.rnn = LSTM(units=hidden_units,
-                        dropout=DROPOUT,
+                        dropout=dropout,
                         return_sequences=True,
                         return_state=True)
         self.attention = BahdanauAttention(hidden_units)
         self.dense = Dense(self.vocab_size)
 
     def call(self,
-            context, x,
-            encoder_state,
-            training=True,
-            return_state=False):
+             context, x,
+             encoder_state,
+             training=True,
+             return_state=False):
         """
         :param context: all encoder states
         :param x: all initial decoder states
@@ -63,22 +65,3 @@ class Decoder(Layer):
             return logits, state_h, state_c
         else:
             return logits
-
-    def get_config(self):
-        config = super().get_config()
-        config.update({
-            "tokenizer": tf.keras.utils.serialize_keras_object(self.tokenizer),
-            "hidden_units": self.hidden_units,
-            "embedding_size": self.embedding_size
-        })
-
-        return {**config}
-
-    @classmethod
-    def from_config(cls, config):
-        tokenizer_config = config.pop("tokenizer")
-        tokenizer = tf.keras.utils.deserialize_keras_object(tokenizer_config)
-        embedding_size = config["embedding_size"]
-        hidden_units = config["hidden_units"]
-
-        return cls(tokenizer, embedding_size, hidden_units)
