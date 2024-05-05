@@ -2,7 +2,6 @@ import numpy as np
 import tensorflow as tf
 
 from clean_data import expand_contractions
-from tokenizer import *
 
 BUFFER_SIZE = 1024
 BATCH_SIZE = 64
@@ -67,10 +66,13 @@ def convert_to_tf_dataset(english, german):
     return train_raw, val_raw, test_raw
 
 
-def process_text(context, target):
-    context = en_vec(context).to_tensor()
-    target = ger_vec(target)
-    targ_in = target[:, :-1].to_tensor()
-    targ_out = target[:, 1:].to_tensor()
+def tokenize_dataset(dataset, en_vec, ger_vec):
+    def process_text(context, target):
+        context = en_vec(context).to_tensor()
+        target = ger_vec(target)
+        targ_in = target[:, :-1].to_tensor()
+        targ_out = target[:, 1:].to_tensor()
 
-    return (context, targ_in), targ_out
+        return (context, targ_in), targ_out
+
+    return dataset.map(process_text, tf.data.AUTOTUNE)
