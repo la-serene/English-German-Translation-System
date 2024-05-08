@@ -3,7 +3,7 @@ from tensorflow.keras.layers import Layer, Embedding, LSTM, Dense
 
 from .BahdanauAttention import BahdanauAttention
 
-DROPOUT = 0.2
+DROPOUT = 0.5
 
 
 class Decoder(Layer):

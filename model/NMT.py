@@ -43,10 +43,9 @@ class NMT(Model):
 
         return logits
 
-    def predict(self, next_inputs,
-                word_to_idx,
-                maxlen=40):
-
+    def translate(self, next_inputs,
+                  word_to_idx,
+                  maxlen=40):
         def sampling(_logits):
             probs = tf.nn.softmax(_logits)
             dist = probs.numpy().squeeze()
@@ -85,3 +84,14 @@ class NMT(Model):
                 translation.append(next_inputs)
 
         return " ".join(translation)
+
+    def get_config(self):
+        config = super().get_config()
+        config.update({
+            "input_tokenizer": tf.keras.utils.serialize_keras_object(self.input_tokenizer),
+            "output_tokenizer": tf.keras.utils.serialize_keras_object(self.output_tokenizer),
+            "embedding_size": self.embedding_size,
+            "hidden_units": self.hidden_units
+        })
+
+        return {**config}
