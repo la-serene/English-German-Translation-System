@@ -3,7 +3,7 @@ import argparse
 import tensorflow as tf
 
 from model import NMT
-from prepare_data import prepare_dataset, convert_to_tf_dataset, process_text
+from prepare_data import prepare_dataset, convert_to_tf_dataset, tokenize_dataset
 from tokenizer import en_vec, ger_vec
 
 
@@ -27,9 +27,9 @@ def main():
     en_vec.adapt(train_raw.map(lambda src, tar: src))
     ger_vec.adapt(train_raw.map(lambda src, tar: tar))
 
-    train_ds = train_raw.map(process_text, tf.data.AUTOTUNE)
-    val_ds = val_raw.map(process_text, tf.data.AUTOTUNE)
-    test_ds = test_raw.map(process_text, tf.data.AUTOTUNE)
+    train_ds = tokenize_dataset(train_raw, en_vec, ger_vec)
+    val_ds = tokenize_dataset(val_raw, en_vec, ger_vec)
+    test_ds = tokenize_dataset(test_raw, en_vec, ger_vec)
 
     model = NMT(en_vec, ger_vec, args.embedding_size, args.hidden_units)
     model.compile(optimizer=tf.keras.optimizers.Adam(args.learning_rate),
