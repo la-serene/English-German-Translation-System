@@ -1,7 +1,7 @@
 import tensorflow as tf
 from tensorflow.keras.layers import Layer, Embedding, Bidirectional, LSTM
 
-DROPOUT = 0.5
+DROPOUT = 0.3
 
 
 class Encoder(Layer):
