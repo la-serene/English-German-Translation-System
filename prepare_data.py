@@ -13,8 +13,12 @@ def prepare_dataset(path_to_dataset):
 
     with open(path_to_dataset) as f:
         for line in f:
+            line = line.split("CC-BY")
+
             if len(line) > 0:
-                line = line.split("    ")
+                line = line[0]
+                line = line.strip().split('\t')
+
                 english.append(expand_contractions(line[0], lang="en"))
                 german.append(expand_contractions(line[1], lang="ger"))
 
