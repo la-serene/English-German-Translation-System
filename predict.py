@@ -37,7 +37,7 @@ def main():
     print("Loading the weight...")
 
     # Init model params
-    nmt.predict("lorem ispum", word_to_idx)
+    nmt.translate("lorem ispum", word_to_idx)
     nmt.load_weights(args.weight_path)
 
     while 1:
