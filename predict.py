@@ -46,7 +46,7 @@ def main():
         if sentence == "EXIT":
             break
 
-        translation = nmt.predict(sentence, word_to_idx)
+        translation = nmt.translate(sentence, word_to_idx)
         translation = " ".join(translation)
         print("{}\n".format(translation))
 
