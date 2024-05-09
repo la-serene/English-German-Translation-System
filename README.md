@@ -33,7 +33,7 @@ Here is a description on the command-line arguments:
 ```
 --embedding_size: Size of the embedding layer. Default: 128.
 --hidden_units: Number of hidden units in the model. Default: 128.
---weight_path: Path to the weights file for the custom model. Default: "./weights/custom_model_v1.weights.h5".
+--weight_path: Path to the weights file for the custom model. Default: "./weights/model_v8.weights.h5".
 ```
 
 Currently, there is no additional configurable command-line arguments. In the future, an optional argument
