@@ -2,7 +2,7 @@ import tensorflow as tf
 import tensorflow_text as tf_text
 from tensorflow.keras.layers import TextVectorization
 
-max_vocab_size = 20000
+max_vocab_size = 16000
 
 
 def text_standardize(text):
