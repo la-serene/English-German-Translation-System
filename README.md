@@ -1,5 +1,7 @@
 # Introduction
 
+[![Goolge Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1EKOm7ULFKEusvEFb8thSGOHTfRnRKru7?usp=sharing)
+
 An English - German Neural Machine Translator informed by Bahdanau Attention paper by Bahdanau et al. (2014).
 
 Note: Since this project is carried out for educational purpose, the overall performance may not be satisfying.
