@@ -23,7 +23,7 @@ def get_model_metadata(model_name, save_path="./weights.jsonl"):
         data = json.load(f)
         metadata = data[model_name]
 
-    return metadata
+    return model_name, metadata
 
 
 def is_model_exist(model_name, save_path="./weights.jsonl"):
