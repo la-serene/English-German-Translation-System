@@ -5,6 +5,7 @@ import tensorflow as tf
 from model import NMT
 from prepare_data import prepare_dataset, convert_to_tf_dataset, tokenize_dataset
 from tokenizer import en_vec, ger_vec
+from utils import save_model_metadata
 
 
 def get_args():
@@ -14,7 +15,7 @@ def get_args():
     parser.add_argument('--hidden_units', type=int, default=128)
     parser.add_argument('--epochs', type=int, default=5)
     parser.add_argument('--learning_rate', type=float, default=0.001)
-    parser.add_argument('--save_path', type=str, default="./weights/custom_model_v1.weights.h5")
+    parser.add_argument('--save_path', type=str, default="./weights/custom_v1.weights.h5")
 
     return parser.parse_args()
 
@@ -40,8 +41,11 @@ def main():
     print("Model is evaluating...")
     model.evaluate(test_ds)
 
+    model_name = input("Enter model name: ")
     model.save(args.save_path)
-    print("Model saved to {}".format(args.save_path))
+    print("Model {} saved to {}".format(model_name, args.save_path))
+
+    save_model_metadata(model_name, args.save_path, args.embedding_size, args.hidden_units)
 
 
 if __name__ == "__main__":
