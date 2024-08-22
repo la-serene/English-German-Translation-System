@@ -1,0 +1,7 @@
+{
+  "v8": {
+    "path": "./weights/model_v8.weights.h5",
+    "embedding_size": 128,
+    "hidden_units": 128
+  }
+}
