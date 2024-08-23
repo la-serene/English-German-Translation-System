@@ -2,7 +2,6 @@ import argparse
 
 import tensorflow as tf
 
-from model import NMT
 from prepare_data import prepare_dataset, convert_to_tf_dataset
 from tokenizer import en_vec, ger_vec, ger_word_to_idx
 from utils import get_model_metadata

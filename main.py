@@ -1,19 +1,15 @@
+import tensorflow as tf
+
 from fastapi import FastAPI
 
-from model import NMT
-from tokenizer import en_vec, ger_vec, ger_word_to_idx
-from utils import get_model_metadata, is_model_exist
+from tokenizer import ger_word_to_idx
+from utils import *
 
 # Default model args
-model_name, metadata = get_model_metadata("v8")
+model_name, metadata = get_model_metadata("v9")
 
 app = FastAPI()
-model = NMT(en_vec,
-            ger_vec,
-            metadata["embedding_size"],
-            metadata["hidden_units"])
-model.translate("lorem ispum", ger_word_to_idx)
-model.load_weights(metadata["model_path"])
+model = tf.keras.models.load_model(metadata["model_path"])
 
 
 @app.get("/")
@@ -31,6 +27,12 @@ async def translate(text: str):
     }
 
 
+@app.get("/get_models")
+async def get_models(path="./weights.jsonl"):
+    data = retrieve_all_models(path)
+    return data
+
+
 @app.post("/model")
 async def select_and_load_model(name: str):
     global model, model_name, metadata
@@ -39,14 +41,8 @@ async def select_and_load_model(name: str):
         pass
     else:
         if is_model_exist(name):
-            model_name, metadata = get_model_metadata(name)
-            model = NMT(en_vec,
-                        ger_vec,
-                        metadata["embedding_size"],
-                        metadata["hidden_units"])
-
-            model.translate("lorem ispum", ger_word_to_idx)
-            model.load_weights(metadata["model_path"])
+            _, metadata = get_model_metadata(name)
+            model = tf.keras.models.load_model(metadata["model_path"])
 
             return {
                 "status": 200,

@@ -26,6 +26,12 @@ def get_model_metadata(model_name, save_path="./weights.jsonl"):
     return model_name, metadata
 
 
+def retrieve_all_models(path="./weights.jsonl"):
+    with open(path, "r") as f:
+        data = json.load(f)
+    return data
+
+
 def is_model_exist(model_name, save_path="./weights.jsonl"):
     with open(save_path, "r") as f:
         data = json.load(f)
