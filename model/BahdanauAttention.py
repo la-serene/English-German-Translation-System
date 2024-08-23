@@ -2,10 +2,12 @@ import tensorflow as tf
 from tensorflow.keras.layers import Layer, Dense, Add, Activation, LayerNormalization
 
 
+@tf.keras.utils.register_keras_serializable()
 class BahdanauAttention(Layer):
     def __init__(self,
-                 hidden_units):
-        super().__init__()
+                 hidden_units,
+                 **kwargs):
+        super().__init__(**kwargs)
         self.Va = Dense(1)
         self.Wa = Dense(hidden_units)
         self.Ua = Dense(hidden_units)
@@ -22,7 +24,8 @@ class BahdanauAttention(Layer):
         :param: context: tensor, all encoder hidden states
         :param: x: tensor, previous state from Decoder
         :return:
-            context_vector: tensor, the calculated context vector based on the input parameters
+            context_vector: tensor, the calculated context vector based on the
+                input parameters
         """
         # Expand dims to ensure scores shape = [batch, Ty, Tx]
         context = tf.expand_dims(context, axis=1)
@@ -40,3 +43,11 @@ class BahdanauAttention(Layer):
         context_vector = self.add([context_vector, tf.squeeze(x, -2)])
 
         return context_vector
+
+    def get_config(self):
+        config = super().get_config()
+        config.update({
+            "hidden_units": self.hidden_units,
+        })
+
+        return {**config}

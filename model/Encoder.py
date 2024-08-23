@@ -4,26 +4,27 @@ from tensorflow.keras.layers import Layer, Embedding, Bidirectional, LSTM
 DROPOUT = 0.3
 
 
+@tf.keras.utils.register_keras_serializable()
 class Encoder(Layer):
     def __init__(self,
-                 tokenizer,
                  embedding_size,
                  hidden_units,
-                 dropout=DROPOUT):
+                 vocab_size,
+                 dropout=DROPOUT,
+                 **kwargs):
         """
             Encoder Block in seq2seq
 
-        :param tokenizer: tokenizer of the source language
         :param embedding_size: dimensionality of the embedding layer
         :param hidden_units: dimensionality of the output
+        :param vocab_size: vocabulary size
         :param dropout: dropout rate
         """
 
-        super().__init__()
-        self.tokenizer = tokenizer
+        super().__init__(**kwargs)
         self.embedding_size = embedding_size
         self.hidden_units = hidden_units
-        self.vocab_size = tokenizer.vocabulary_size()
+        self.vocab_size = vocab_size
         self.embedding = Embedding(input_dim=self.vocab_size,
                                    output_dim=embedding_size)
         self.rnn = Bidirectional(
@@ -50,3 +51,14 @@ class Encoder(Layer):
                                                                    training=training)
 
         return x, forward_h + backward_h, forward_c + backward_c
+
+    def get_config(self):
+        config = super().get_config()
+        config.update({
+            "embedding_size": self.embedding_size,
+            "hidden_units": self.hidden_units,
+            "vocab_size": self.vocab_size,
+            "dropout": DROPOUT
+        })
+
+        return {**config}
