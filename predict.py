@@ -10,7 +10,7 @@ from utils import get_model_metadata
 
 def get_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--model_name', type=str, default="v8")
+    parser.add_argument('--model_name', type=str, default="v9")
 
     return parser.parse_args()
 
