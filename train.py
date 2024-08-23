@@ -14,8 +14,8 @@ def get_args():
     parser.add_argument('--embedding_size', type=int, default=128)
     parser.add_argument('--hidden_units', type=int, default=128)
     parser.add_argument('--epochs', type=int, default=5)
-    parser.add_argument('--learning_rate', type=float, default=0.001)
-    parser.add_argument('--save_path', type=str, default="./weights/custom_v1.weights.h5")
+    parser.add_argument('--learning_rate', type=float, default=0.005)
+    parser.add_argument('--save_path', type=str, default="./weights/custom_v1.keras")
 
     return parser.parse_args()
 
