@@ -1,6 +1,6 @@
 {
-  "v8": {
-    "path": "./weights/model_v8.weights.h5",
+  "v9": {
+    "path": "./weights/v9.keras",
     "embedding_size": 128,
     "hidden_units": 128
   }
