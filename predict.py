@@ -25,7 +25,7 @@ def main():
 
     _, metadata = get_model_metadata(args.model_name)
 
-    nmt = tf.keras.models.load_model(metadata["model_path"])
+    nmt = tf.keras.models.load_model(metadata["path"])
 
     while 1:
         sentence = input("Input the English sentence:")
