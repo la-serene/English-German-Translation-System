@@ -1,7 +1,7 @@
 import tensorflow as tf
-
 from fastapi import FastAPI
 
+from model import NMT      # Load model draft
 from tokenizer import ger_word_to_idx
 from utils import *
 
