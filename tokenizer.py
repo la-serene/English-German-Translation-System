@@ -29,3 +29,10 @@ en_vec = TextVectorization(max_tokens=max_vocab_size,
 ger_vec = TextVectorization(max_tokens=max_vocab_size,
                             standardize=text_standardize,
                             ragged=True)
+
+en_vocab = en_vec.get_vocabulary()
+ger_vocab = ger_vec.get_vocabulary()
+
+ger_word_to_idx = {}
+for i in range(len(ger_vocab)):
+    ger_word_to_idx[ger_vocab[i]] = i

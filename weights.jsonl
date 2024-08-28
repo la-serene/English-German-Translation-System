@@ -1,0 +1,7 @@
+{
+  "v9": {
+    "path": "./weights/v9.keras",
+    "embedding_size": 128,
+    "hidden_units": 128
+  }
+}
