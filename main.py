@@ -21,7 +21,7 @@ async def root():
 
 @app.post("/translate")
 async def translate(text: str):
-    translation = model.translate(text, ger_word_to_idx)
+    translation = await model.translate(text, ger_word_to_idx)
     return {
         "translation": translation
     }
@@ -29,7 +29,7 @@ async def translate(text: str):
 
 @app.get("/get_models")
 async def get_models(path="./weights.jsonl"):
-    data = retrieve_all_models(path)
+    data = await retrieve_all_models(path)
     return data
 
 
@@ -40,9 +40,9 @@ async def select_and_load_model(name: str):
     if name == model_name:
         pass
     else:
-        if is_model_exist(name):
-            _, metadata = get_model_metadata(name)
-            model = tf.keras.models.load_model(metadata["model_path"])
+        if await is_model_exist(name):
+            _, metadata = await get_model_metadata(name)
+            model = await tf.keras.models.load_model(metadata["model_path"])
 
             return {
                 "status": 200,
