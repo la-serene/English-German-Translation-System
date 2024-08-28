@@ -1,5 +1,4 @@
 # Introduction
-
 [![Goolge Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1EKOm7ULFKEusvEFb8thSGOHTfRnRKru7?usp=sharing)
 
 An English - German Neural Machine Translator informed by Bahdanau Attention paper by Bahdanau et al. (2014).
@@ -7,7 +6,6 @@ An English - German Neural Machine Translator informed by Bahdanau Attention pap
 Note: Since this project is carried out for educational purpose, the overall performance may not be satisfying.
 
 # Table of contents
-
 - [Introduction](#introduction)
 - [Installation](#installation)
 - [Usage](#usage)
@@ -17,39 +15,32 @@ Note: Since this project is carried out for educational purpose, the overall per
 - [References](#references)
 
 # Installation
-
+After cloning the repository, install the required packages by running the following command in the terminal.
 ```
 pip install -r requirements.txt
 ```
 
 # Usage
-
 After replacing the `____` with the source English sentence and running the command, the translation should be printed
 in console.
-
 ```
 python predict.py ____
 ```
 
 Here is a description on the command-line arguments:
 ```
---embedding_size: Size of the embedding layer. Default: 128.
---hidden_units: Number of hidden units in the model. Default: 128.
---weight_path: Path to the weights file for the custom model. Default: "./weights/model_v8.weights.h5".
+--model_name: Name of the saved model. Default: "v9".
 ```
 
 Currently, there is no additional configurable command-line arguments. In the future, an optional argument
 for `temperature` might be available.
 
 # Data
-
-The dataset is taken from Kaggle
-Dataset [English To German](https://www.kaggle.com/datasets/kaushal2896/english-to-german), consisting of around 277,891
-English-German pair of sentences and randomly split into 3 sets: training, evaluation and testing with ratio 0.8, 0.1,
-0,1 respectively.
+The dataset is taken from Kaggle Dataset [English To German](https://www.kaggle.com/datasets/kaushal2896/english-to-german), consisting of around 277,891
+English-German pair of sentences and randomly split into 3 sets: training, evaluation and testing with 0.8, 0.1,
+0,1 ratio respectively.
 
 # Training
-
 This project is now available for training on any English-German dataset. It's also noteworthy that the custom dataset 
 should follow the same pattern as in dataset folder.
 
@@ -60,12 +51,11 @@ Here is a description on the command-line arguments:
 --hidden_units: Number of hidden units in the model. Default: 128.
 --epochs: Number of epochs for training. Default: 5.
 --learning_rate: Learning rate for the optimizer. Default: 0.001.
---save_path: Path to save the trained model weights. Default: "./weights/custom_model_v1.weights.h5".
+--save_path: Path to save the trained model weights. Default: "./weights/custom_v1.keras".
 ```
 
 # Results
-
-Since the last version of this model, the apply of Bahdanau Attention on seq2seq has yielded significant improvement in
+Since the last version of this model, the integration of Bahdanau Attention on seq2seq has yielded significant improvement in
 the overall performance. Translations have become more satisfying on long sentences. Repeatedly sampling a new translation
 could be considered as a user-friendly solution to find the best translation as well as test the model quality.
 
@@ -79,7 +69,6 @@ As said, translations should not be expected to fully convey the meaning of the 
 | He tries to read a book every week.    | Er schwierig eine, banane wir gestern zu einem.  |
 
 # References
-
 <a id="1" href="https://arxiv.org/abs/1409.0473">[1]</a>
 Dzmitry Bahdanau, Kyunghyun Cho, Yoshua Bengio (2014).
 Neural Machine Translation by Jointly Learning to Align and Translate.
