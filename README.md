@@ -21,8 +21,8 @@ pip install -r requirements.txt
 ```
 
 # Usage
-After replacing the `____` with the source English sentence and running the command, the translation should be printed
-in console.
+Pass the desired model name (look at weights.jsonl for further information) to the CLI before entering the source
+English sentence.
 ```
 python predict.py ____
 ```
