@@ -9,7 +9,7 @@ from utils import *
 model_name, metadata = get_model_metadata("v9")
 
 app = FastAPI()
-model = tf.keras.models.load_model(metadata["model_path"])
+model = tf.keras.models.load_model(metadata["path"])
 
 
 @app.get("/")
