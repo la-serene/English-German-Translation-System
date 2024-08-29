@@ -31,6 +31,10 @@ def get_word_to_idx(tokenizer):
     return word_to_idx
 
 
+def get_vocab(tokenizer):
+    return tokenizer.get_vocabulary()
+
+
 en_vec = TextVectorization(max_tokens=max_vocab_size,
                            standardize=text_standardize,
                            ragged=True)

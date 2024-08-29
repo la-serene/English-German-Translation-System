@@ -57,6 +57,7 @@ class NMT(Model):
 
     def translate(self, next_inputs,
                   maxlen=40):
+        ger_vocab = get_vocab(ger_vec)
         def sampling(head_logits):
             probs = tf.nn.softmax(head_logits)
             dist = probs.numpy().squeeze()
