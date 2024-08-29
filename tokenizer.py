@@ -23,16 +23,17 @@ def text_standardize(text):
     return text
 
 
+def get_word_to_idx(tokenizer):
+    vocab = tokenizer.get_vocabulary()
+    word_to_idx = {}
+    for i in range(len(vocab)):
+        word_to_idx[vocab[i]] = i
+    return word_to_idx
+
+
 en_vec = TextVectorization(max_tokens=max_vocab_size,
                            standardize=text_standardize,
                            ragged=True)
 ger_vec = TextVectorization(max_tokens=max_vocab_size,
                             standardize=text_standardize,
                             ragged=True)
-
-en_vocab = en_vec.get_vocabulary()
-ger_vocab = ger_vec.get_vocabulary()
-
-ger_word_to_idx = {}
-for i in range(len(ger_vocab)):
-    ger_word_to_idx[ger_vocab[i]] = i
