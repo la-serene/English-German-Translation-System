@@ -3,7 +3,7 @@ import tensorflow as tf
 from tensorflow.keras import Model
 from tensorflow.keras.layers import Dense
 
-from clean_data import expand_contractions, en_contraction_map
+from clean_data import expand_contractions
 from tokenizer import *
 from .Decoder import Decoder
 from .Encoder import Encoder
@@ -65,7 +65,7 @@ class NMT(Model):
             return idx
 
         translation = []
-        next_inputs = expand_contractions(next_inputs.lower(), en_contraction_map)
+        next_inputs = expand_contractions(next_inputs.lower(), "en")
         next_idx = np.asarray(en_vec(next_inputs))
 
         while next_idx.ndim != 2:

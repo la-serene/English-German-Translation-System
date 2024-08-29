@@ -4,7 +4,7 @@ import tensorflow as tf
 
 from model import NMT   # Load model draft
 from prepare_data import prepare_dataset, convert_to_tf_dataset
-from tokenizer import en_vec, ger_vec, ger_word_to_idx
+from tokenizer import en_vec, ger_vec
 from utils import get_model_metadata
 
 
@@ -34,7 +34,7 @@ def main():
         if sentence == "EXIT":
             break
 
-        translation = nmt.translate(sentence, ger_word_to_idx)
+        translation = nmt.translate(sentence)
         translation = " ".join(translation)
         print("{}\n".format(translation))
 
