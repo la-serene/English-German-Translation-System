@@ -46,9 +46,8 @@ ger_contraction_map = {
 
 
 def expand_contractions(text, lang="en"):
-    if lang == "en":
-        mapping = en_contraction_map
-    elif lang == "ger":
+    mapping = en_contraction_map
+    if lang == "ger":
         mapping = ger_contraction_map
 
     for key, value in mapping.items():
