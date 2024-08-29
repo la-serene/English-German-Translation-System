@@ -61,7 +61,6 @@ class NMT(Model):
             probs = tf.nn.softmax(head_logits)
             dist = probs.numpy().squeeze()
             idx = np.random.choice(range(len(ger_vocab)), p=dist)
-
             return idx
 
         translation = []
@@ -74,6 +73,7 @@ class NMT(Model):
         encoder_outputs, state_h, state_c = self.encoder(next_idx, training=False)
 
         next_inputs = "[START]"
+        ger_word_to_idx = get_word_to_idx(ger_vec)
         next_idx = np.asarray(ger_word_to_idx[next_inputs])
 
         for i in range(maxlen):
