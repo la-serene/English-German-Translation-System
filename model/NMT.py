@@ -4,7 +4,7 @@ from tensorflow.keras import Model
 from tensorflow.keras.layers import Dense
 
 from clean_data import expand_contractions
-from tokenizer import *
+from tokenizer import get_vocab, get_word_to_idx
 from .Decoder import Decoder
 from .Encoder import Encoder
 
@@ -57,7 +57,8 @@ class NMT(Model):
 
     def translate(self, next_inputs,
                   maxlen=40):
-        ger_vocab = get_vocab(ger_vec)
+        ger_vocab = get_vocab(self.output_tokenizer)
+
         def sampling(head_logits):
             probs = tf.nn.softmax(head_logits)
             dist = probs.numpy().squeeze()
@@ -66,7 +67,7 @@ class NMT(Model):
 
         translation = []
         next_inputs = expand_contractions(next_inputs.lower(), "en")
-        next_idx = np.asarray(en_vec(next_inputs))
+        next_idx = np.asarray(self.input_tokenizer(next_inputs))
 
         while next_idx.ndim != 2:
             next_idx = tf.expand_dims(next_idx, axis=0)
@@ -74,7 +75,7 @@ class NMT(Model):
         encoder_outputs, state_h, state_c = self.encoder(next_idx, training=False)
 
         next_inputs = "[START]"
-        ger_word_to_idx = get_word_to_idx(ger_vec)
+        ger_word_to_idx = get_word_to_idx(self.output_tokenizer)
         next_idx = np.asarray(ger_word_to_idx[next_inputs])
 
         for i in range(maxlen):
@@ -110,3 +111,21 @@ class NMT(Model):
         })
 
         return {**config}
+
+    @classmethod
+    def from_config(cls, config):
+        embedding_size = config.pop("embedding_size")
+        hidden_units = config.pop("hidden_units")
+        input_vocab_size = config.pop("input_vocab_size")
+        output_vocab_size = config.pop("output_vocab_size")
+        input_tokenizer_config = config.pop("input_tokenizer")
+        output_tokenizer_config = config.pop("output_tokenizer")
+        input_tokenizer = tf.keras.utils.deserialize_keras_object(input_tokenizer_config)
+        output_tokenizer = tf.keras.utils.deserialize_keras_object(output_tokenizer_config)
+        return cls(input_tokenizer,
+                   output_tokenizer,
+                   embedding_size,
+                   hidden_units,
+                   input_vocab_size,
+                   output_vocab_size,
+                   **config)
