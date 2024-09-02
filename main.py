@@ -1,9 +1,14 @@
 import tensorflow as tf
 from fastapi import FastAPI
+from pydantic import BaseModel
 
-from model import NMT      # Load model draft
-from tokenizer import ger_word_to_idx
 from utils import *
+
+
+class RequestModel(BaseModel):
+    inputs: str
+    maxlen: int
+
 
 # Default model args
 model_name, metadata = get_model_metadata("v9")
@@ -19,9 +24,11 @@ async def root():
     }
 
 
-@app.post("/translate")
-async def translate(text: str):
-    translation = await model.translate(text, ger_word_to_idx)
+@app.post("/translate/")
+async def translate(data: RequestModel):
+    inputs = data.inputs
+    maxlen = data.maxlen
+    translation = await model.translate(next_inputs=inputs, maxlen=maxlen)
     return {
         "translation": translation
     }
@@ -33,23 +40,23 @@ async def get_models(path="./weights.jsonl"):
     return data
 
 
-@app.post("/model")
-async def select_and_load_model(name: str):
-    global model, model_name, metadata
-
-    if name == model_name:
-        pass
-    else:
-        if await is_model_exist(name):
-            _, metadata = await get_model_metadata(name)
-            model = await tf.keras.models.load_model(metadata["model_path"])
-
-            return {
-                "status": 200,
-                "message": "Model loaded successfully!"
-            }
-        else:
-            return {
-                "status": 400,
-                "message": "Model does not exist!"
-            }
+# @app.post("/model")
+# async def select_and_load_model(name: str):
+#     global model, model_name, metadata
+#
+#     if name == model_name:
+#         pass
+#     else:
+#         if await is_model_exist(name):
+#             _, metadata = await get_model_metadata(name)
+#             model = await tf.keras.models.load_model(metadata["model_path"])
+#
+#             return {
+#                 "status": 200,
+#                 "message": "Model loaded successfully!"
+#             }
+#         else:
+#             return {
+#                 "status": 400,
+#                 "message": "Model does not exist!"
+#             }
