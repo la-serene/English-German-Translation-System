@@ -1,13 +1,14 @@
 import tensorflow as tf
 from fastapi import FastAPI
 from pydantic import BaseModel
+from model import NMT   # Locate model
 
 from utils import *
 
 
 class RequestModel(BaseModel):
     inputs: str
-    maxlen: int
+    maxlen: int = 40
 
 
 # Default model args
@@ -24,11 +25,11 @@ async def root():
     }
 
 
-@app.post("/translate/")
+@app.post("/translate")
 async def translate(data: RequestModel):
     inputs = data.inputs
     maxlen = data.maxlen
-    translation = await model.translate(next_inputs=inputs, maxlen=maxlen)
+    translation = model.translate(next_inputs=inputs, maxlen=maxlen)
     return {
         "translation": translation
     }
@@ -36,7 +37,7 @@ async def translate(data: RequestModel):
 
 @app.get("/get_models")
 async def get_models(path="./weights.jsonl"):
-    data = await retrieve_all_models(path)
+    data = retrieve_all_models(path)
     return data
 
 
