@@ -4,7 +4,7 @@ from tensorflow.keras.layers import TextVectorization
 
 max_vocab_size = 16000
 
-
+@tf.keras.utils.register_keras_serializable()
 def text_standardize(text):
     # Split accented characters.
     text = tf_text.normalize_utf8(text, 'NFKD')
