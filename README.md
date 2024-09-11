@@ -12,6 +12,7 @@ Note: Since this project is carried out for educational purpose, the overall per
 - [Data](#data)
 - [Training](#training)
 - [Results](#results)
+- [Deployment](#deployment)
 - [References](#references)
 
 # Installation
@@ -24,7 +25,7 @@ pip install -r requirements.txt
 Pass the desired model name (look at weights.jsonl for further information) to the CLI before entering the source
 English sentence.
 ```
-python predict.py ____
+python predict.py
 ```
 
 Here is a description on the command-line arguments:
@@ -67,6 +68,9 @@ As said, translations should not be expected to fully convey the meaning of the 
 | This is the first translation.         | Danke bitte wahrend das sonst fischen.           |
 | I didn't go to his birthday yesterday. | Er arzt gleich den originals uber in den weisen. |
 | He tries to read a book every week.    | Er schwierig eine, banane wir gestern zu einem.  |
+
+# Deployment
+A workshop on how to deploy this model can be found in the [deploy-tf-model-on-aws](https://github.com/la-serene/deploy-tf-model-on-aws.git) repo.
 
 # References
 <a id="1" href="https://arxiv.org/abs/1409.0473">[1]</a>
